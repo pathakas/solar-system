@@ -8,7 +8,7 @@ on:
             - feature/*
 
 env:
-    MONGO_URI: mongodb+srv://learningcluster.lx6vkuk.mongodb.net/
+    MONGO_URI: mongodb+srv://learningcluster.lx6vkuk.mongodb.net/superdata
     MONGO_USERNAME: pathakashutosh1975
     MONGO_PASSWORD: T@ch@1977
 jobs:
