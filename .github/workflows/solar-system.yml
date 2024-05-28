@@ -8,9 +8,9 @@ on:
             - feature/*
 
 env:
-    MONGO_URI: mongodb+srv://learningcluster.lx6vkuk.mongodb.net/superdata
-    MONGO_USERNAME: pathakashutosh1975
-    MONGO_PASSWORD: T@ch@1977
+    MONGO_URI: ${{ vars.MONGO_URI}}
+    MONGO_USERNAME: ${{ vars.MONGO_USERNAME}}
+    MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD}}
 jobs:
     unit-testing:
         runs-on: ubuntu-latest
