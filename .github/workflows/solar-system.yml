@@ -74,7 +74,7 @@ jobs:
       needs: [code-coverage, unit-testing]
       steps:
         - name: Docker login
-          uses: docker/login-actions@v4
+          uses: docker/login-action@v3
           with:
             username: ${{ vars.DOCKERHUB_USERNAME }}
             password: ${{ secrets.DOCKERHUB_PASSWORD }}
