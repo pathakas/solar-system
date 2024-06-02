@@ -57,7 +57,7 @@ jobs:
             uses: actions/cache@v3
             with:
               path: '**/node_modules'
-              key: ${{ runner.os }}-node-module- {{ hashFiles('package-lock.json')}}
+              key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
           - name: Install Dependencies
             run: npm install
           - name: Check Code Coverage
