@@ -72,9 +72,17 @@ jobs:
     docker:
       runs-on: ubuntu-latest
       needs: [code-coverage, unit-testing]
+      permissions: 
+        packages: write
       steps:
         - name: Checkout Repository
           uses: actions/checkout@v4
+
+        - name: Docker Docker hub login
+          uses: docker/login-action@v3
+          with:
+            username: ${{ vars.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_PASSWORD}}
 
         - name: Docker GHCR login
           uses: docker/login-action@v3
@@ -112,4 +120,6 @@ jobs:
           with:
               context: .
               push: true
-              tags: ${{ vars.DOCKERHUB_USERNAME }}/solar-sytem:${{ github.sha}}
+              tags: |
+                  ${{ vars.DOCKERHUB_USERNAME }}/solar-sytem:${{ github.sha}}
+                  ghcr.io/${{ github.repository_owner }}/solar-system:${{ github.sha}}
