@@ -83,11 +83,11 @@ jobs:
             password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
               
-        - name: Build and push
+        - name: Build Image
           uses: docker/build-push-action@v5
           with:
             context: .
-            push: true
+            push: false
             tags: ${{ vars.DOCKERHUB_USERNAME }}/solar-sytem:${{ github.sha}}
 
         - name: Docker Image Test
@@ -105,3 +105,10 @@ jobs:
 
                 echo Testing Image URL using wget
                 curl -v http://localhost:3000/live
+          
+        - name: Docker push
+          uses: docker/build-push-action@v5
+          with:
+              context: .
+              push: true
+              tags: ${{ vars.DOCKERHUB_USERNAME }}/solar-sytem:${{ github.sha}}
