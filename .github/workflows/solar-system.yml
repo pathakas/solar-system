@@ -76,11 +76,12 @@ jobs:
         - name: Checkout Repository
           uses: actions/checkout@v4
 
-        - name: Docker login
+        - name: Docker GHCR login
           uses: docker/login-action@v3
           with:
-            username: ${{ vars.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_PASSWORD }}
+            registry: ghcr.io
+            username: ${{ github.repository_owner }}
+            password: ${{ secrets.GITHUB_TOKEN}}
 
               
         - name: Build Image
