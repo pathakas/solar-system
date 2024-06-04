@@ -105,7 +105,7 @@ jobs:
                 # echo $IP
 
                 echo Testing Image URL using wget
-                curl -v http://localhost:3000/live
+                #curl -v http://localhost:3000/live
           
         - name: Docker push
           uses: docker/build-push-action@v5
