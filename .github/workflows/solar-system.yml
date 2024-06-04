@@ -104,5 +104,5 @@ jobs:
                 # echo $IP
 
                 echo Testing Image URL using wget
-                curl -o out.json http://127.0.0.1/live
+                curl -o out.json http://127.0.0.1:3000/live
                 ls -lrth
