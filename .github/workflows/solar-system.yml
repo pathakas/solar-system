@@ -161,4 +161,8 @@ jobs:
           with:
             method: kubeconfig
             kubeconfig: ${{ secrets.KUBECONFIG}}
+
+        - name: Test Kubectl
+          run: |
+            kubectl get nodes
         
