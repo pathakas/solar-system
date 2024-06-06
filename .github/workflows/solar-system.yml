@@ -151,14 +151,19 @@ jobs:
         - name: Checkout Repository
           uses: actions/checkout@v4
 
-        - name: Create k8s Kind Cluster
-          uses: helm/kind-action@v1
+        - name: Install kind
+          uses: helm/kind-action@v1.3.0
           id: kind
+          with:
+            version: v0.11.1 # specify the version of kind you want to use
 
         - name: Install Kubectl CLI
           uses: azure/setup-kubectl@v3
           with:
             version: v1.29.2
+
+        - name: Create k8s Kind Cluster
+          uses: helm/kind-action@v1
         
         - name: Create kind cluster
           run: kind create cluster --name github-actions
@@ -167,9 +172,13 @@ jobs:
           run: echo "${{ steps.kind.outputs.kubeconfig }}" > $HOME/.kube/config
           env:
             KUBECONFIG: $HOME/.kube/config
+        
+        - name: Display kubeconfig content
+          run: cat $HOME/.kube/config
 
-        - name: Test Kubectl
-          run: |
-            kubectl get nodes
+        - name: Get kubectl nodes
+          run: kubectl get nodes
+          env:
+            KUBECONFIG: $HOME/.kube/config
             
         
