@@ -170,8 +170,13 @@ jobs:
           env:
             KUBECONFIG: $HOME/.kube/config
         
-        - name: Display kubeconfig content
-          run: cat $HOME/.kube/config
+        - name: Verify kind cluster
+          run: kind get clusters
+    
+        - name: Verify kubectl config
+          run: kubectl config view --minify
+          env:
+            KUBECONFIG: $HOME/.kube/config
 
         - name: Get kubectl nodes
           run: kubectl get nodes
