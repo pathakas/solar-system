@@ -151,10 +151,9 @@ jobs:
         - name: Checkout Repository
           uses: actions/checkout@v4
 
-        - name: Set up Go
-          uses: actions/setup-go@v3
-          with:
-            go-version: '1.16'
+        - name: Create k8s Kind Cluster
+          uses: helm/kind-action@v1
+          id: kind
 
         - name: Install Kubectl CLI
           uses: azure/setup-kubectl@v3
@@ -166,7 +165,6 @@ jobs:
         
         - name: Create kind cluster
           run: kind create cluster --name github-actions
-          id: kind
         
         - name: Export kubeconfig
           run: echo "${{ steps.kind.outputs.kubeconfig }}" > $HOME/.kube/config
