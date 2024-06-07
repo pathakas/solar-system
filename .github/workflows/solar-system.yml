@@ -167,26 +167,17 @@ jobs:
   
         - name: Verify kind cluster is running
           run: kind get clusters
-  
+
         - name: Export kubeconfig path
           run: kind get kubeconfig --name github-actions > $GITHUB_WORKSPACE/kubeconfig
   
-  
         - name: Verify kubeconfig content
           run: cat $GITHUB_WORKSPACE/kubeconfig
-
-
-        - name: Set KUBECONFIG environment variable
-          run: echo "KUBECONFIG=$GITHUB_WORKSPACE/kubeconfig" >> $GITHUB_ENV
   
-        - name: Verify kubectl configuration
-          run: kubectl config view
-          env:
-            KUBECONFIG: $GITHUB_WORKSPACE/kubeconfig
+        - name: Set KUBECONFIG environment variable for this job
+          run: export KUBECONFIG=$GITHUB_WORKSPACE/kubeconfig && kubectl config view
   
         - name: Get kubectl nodes
-          run: kubectl get nodes
-          env:
-            KUBECONFIG: $GITHUB_WORKSPACE/kubeconfig
+          run: export KUBECONFIG=$GITHUB_WORKSPACE/kubeconfig && kubectl get nodes
             
         
