@@ -148,39 +148,42 @@ jobs:
       runs-on: ubuntu-latest
       needs: Containerization
       steps:
-        - name: Checkout Repository
-          uses: actions/checkout@v4
-
+        - name: Checkout repository
+          uses: actions/checkout@v2
+ 
         - name: Install kind
           uses: helm/kind-action@v1.3.0
-          id: kind
+          id: install_kind
           with:
-            version: v0.11.1 # specify the version of kind you want to use
-
-        - name: Install Kubectl CLI
+            version: v0.11.1
+  
+        - name: Install kubectl
           uses: azure/setup-kubectl@v3
           with:
-            version: v1.29.2
-        
-        # - name: Create kind cluster
-        #   run: kind create cluster --name github-actions
-        
-        - name: Export kubeconfig
-          run: echo "${{ steps.kind.outputs.kubeconfig }}" > $HOME/.kube/config
-          env:
-            KUBECONFIG: $HOME/.kube/config
-        
-        - name: Verify kind cluster
+            version: 'latest'
+  
+        - name: Create kind cluster
+          run: kind create cluster --name github-actions
+  
+        - name: Verify kind cluster is running
           run: kind get clusters
-    
-        - name: Verify kubectl config
-          run: kubectl config view --minify
+  
+        - name: Export kubeconfig path
+          run: kind get kubeconfig --name github-actions > $GITHUB_WORKSPACE/kubeconfig
           env:
-            KUBECONFIG: $HOME/.kube/config
-
+            KUBECONFIG: $GITHUB_WORKSPACE/kubeconfig
+  
+        - name: Verify kubeconfig content
+          run: cat $GITHUB_WORKSPACE/kubeconfig
+  
+        - name: Verify kubectl configuration
+          run: kubectl config view
+          env:
+            KUBECONFIG: $GITHUB_WORKSPACE/kubeconfig
+  
         - name: Get kubectl nodes
           run: kubectl get nodes
           env:
-            KUBECONFIG: $HOME/.kube/config
+            KUBECONFIG: $GITHUB_WORKSPACE/kubeconfig
             
         
