@@ -150,12 +150,6 @@ jobs:
       steps:
         - name: Checkout repository
           uses: actions/checkout@v2
- 
-        # - name: Install kind
-        #   uses: helm/kind-action@v1.3.0
-        #   id: install_kind
-        #   with:
-        #     version: v0.11.1
   
         - name: Install kubectl
           uses: azure/setup-kubectl@v3
