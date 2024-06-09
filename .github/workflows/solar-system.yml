@@ -164,7 +164,7 @@ jobs:
 
         - name: Get kubectl nodes
           run: |
-            kubectl version --short
+            kubectl version
             echo ######################
             kubectl get nodes
     ## USING KIND Cluster
