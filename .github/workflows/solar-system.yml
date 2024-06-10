@@ -145,41 +145,6 @@ jobs:
                   ghcr.io/${{ github.repository_owner }}/solar-system:${{ github.sha}}
 
     dev-deploy:
-      # runs-on: ubuntu-latest
-      # needs: Containerization
-      # steps:
-      #   - name: Checkout repository
-      #     uses: actions/checkout@v2
-  
-      #   - name: Install kubectl
-      #     uses: azure/setup-kubectl@v3
-      #     with:
-      #       version: 'latest' 
-            
-      #   - name: Set KUBECONFIG
-      #     uses: azure/k8s-set-context@v4
-      #     with:
-      #       method: kubeconfig
-      #       kubeconfig: ${{ secrets.KUBECONFIG}}
-
-      #   - name: Get kubectl nodes
-      #     run: |
-      #       kubectl version
-      #       echo ######################
-      #       kubectl get nodes
-
-      #   - name: Replace token
-      #     uses: cschleiden/replace-tokens@v1
-      #     with:
-      #       tokenPrefix: '{'
-      #       tokenSuffix: '}'
-      #       files: '["kubernetes/development/*.yaml"]'
-      #     env:
-      #       NAMESPACE: ${{ vars.NAMESPACE}}
-      #       REPLICAS: ${{ vars.REPLICAS}}
-      #       INGRESS_IP: 
-    ## USING KIND Cluster
-    # dev-deploy:
       runs-on: ubuntu-latest
       needs: Containerization
       steps:
@@ -189,24 +154,77 @@ jobs:
         - name: Install kubectl
           uses: azure/setup-kubectl@v3
           with:
-            version: 'latest'
-  
-        - name: Create kind cluster
-          run: kind create cluster --name github-actions
-  
-        - name: Verify kind cluster is running
-          run: kind get clusters
+            version: 'latest' 
+            
+        - name: Set KUBECONFIG
+          uses: azure/k8s-set-context@v4
+          with:
+            method: kubeconfig
+            kubeconfig: ${{ secrets.KUBECONFIG}}
 
-        - name: Export kubeconfig path
-          run: kind get kubeconfig --name github-actions > $GITHUB_WORKSPACE/kubeconfig
-  
-        - name: Verify kubeconfig content
-          run: cat $GITHUB_WORKSPACE/kubeconfig
-  
-        - name: Set KUBECONFIG environment variable for this job
-          run: export KUBECONFIG=$GITHUB_WORKSPACE/kubeconfig && kubectl config view
-  
         - name: Get kubectl nodes
-          run: export KUBECONFIG=$GITHUB_WORKSPACE/kubeconfig && kubectl get nodes
+          run: |
+            kubectl version
+            echo ######################
+            kubectl get nodes
+
+        - name: Replace token in Manifest files
+          uses: cschleiden/replace-tokens@v1
+          with:
+            tokenPrefix: '{'
+            tokenSuffix: '}'
+            files: '["kubernetes/development/*.yaml"]'
+          env:
+            NAMESPACE: ${{ vars.NAMESPACE}}
+            REPLICAS: ${{ vars.REPLICAS}}
+
+        - name: Check files
+          run: |
+            cat kubernetes/development/*.yaml
+
+        - name: Create MongoDB Secret
+          run: |
+            kubectl -n ${{ vars.NAMESPACE }} create secret generic mongo-db-creds \
+            --from-Literal=MONGO_URI=${{ env.MONGO_URI}} \
+            --from-Literal=MONGO_USERNAME=${{ env.MONGO_USERNAME}} \
+            --from-Literal=MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD}} \
+            --save-config \
+            --dry-run-client \
+            -o yaml | kubectl apply -f -
+        
+        - name: Deploy to Dev Env
+          run: |
+              kubectl apply -f kubernetes/development
+
+    ## USING KIND Cluster
+    # dev-deploy:
+    #   runs-on: ubuntu-latest
+    #   needs: Containerization
+    #   steps:
+    #     - name: Checkout repository
+    #       uses: actions/checkout@v2
+  
+    #     - name: Install kubectl
+    #       uses: azure/setup-kubectl@v3
+    #       with:
+    #         version: 'latest'
+  
+    #     - name: Create kind cluster
+    #       run: kind create cluster --name github-actions
+  
+    #     - name: Verify kind cluster is running
+    #       run: kind get clusters
+
+    #     - name: Export kubeconfig path
+    #       run: kind get kubeconfig --name github-actions > $GITHUB_WORKSPACE/kubeconfig
+  
+    #     - name: Verify kubeconfig content
+    #       run: cat $GITHUB_WORKSPACE/kubeconfig
+  
+    #     - name: Set KUBECONFIG environment variable for this job
+    #       run: export KUBECONFIG=$GITHUB_WORKSPACE/kubeconfig && kubectl config view
+  
+    #     - name: Get kubectl nodes
+    #       run: export KUBECONFIG=$GITHUB_WORKSPACE/kubeconfig && kubectl get nodes
             
         
