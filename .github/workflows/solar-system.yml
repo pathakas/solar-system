@@ -177,6 +177,7 @@ jobs:
           env:
             NAMESPACE: ${{ vars.NAMESPACE}}
             REPLICAS: ${{ vars.REPLICAS}}
+            IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/solar-sytem:${{ github.sha}}
 
         - name: Check files
           run: |
