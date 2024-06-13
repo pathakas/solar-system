@@ -171,7 +171,7 @@ jobs:
         - name: Replace token in Manifest files
           uses: cschleiden/replace-tokens@v1
           with:
-            tokenPrefix: '{'
+            tokenPrefix: '${'
             tokenSuffix: '}'
             files: '["kubernetes/development/*.yaml"]'
           env:
